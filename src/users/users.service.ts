@@ -4,19 +4,26 @@ import {
   BadRequestException,
 } from '@nestjs/common';
 import { InjectModel } from '@nestjs/mongoose';
-import { Model } from 'mongoose';
+import { Model, Types } from 'mongoose';
 import * as bcrypt from 'bcrypt';
 
 import { User } from 'src/users/entities/user.entity';
 import { CreateUserDto } from './dto/create-user.dto';
 import { UpdateUserDto } from './dto/update-user.dto';
+import { RolesService } from 'src/roles/roles.service';
 
 @Injectable()
 export class UsersService {
-  constructor(@InjectModel(User.name) private userModel: Model<User>) {}
+  constructor(
+    private rolesService: RolesService,
+    @InjectModel(User.name) private userModel: Model<User>,
+  ) {}
 
   async findUserById(id: string) {
-    const user = await this.userModel.findById(id).exec();
+    const user = await this.userModel
+      .findById(id)
+      .populate('role', 'name')
+      .exec();
 
     if (!user)
       throw new NotFoundException(`No se encontró al usuario con el id: ${id}`);
@@ -35,20 +42,28 @@ export class UsersService {
   }
 
   async create(createUserDto: CreateUserDto) {
+    // ? find email
     await this.findEmail(createUserDto.email);
+    // ? find role by id
+    await this.rolesService.findRoleById(createUserDto.role);
+
     const newUser = new this.userModel(createUserDto);
+
     newUser.password = await bcrypt.hash(newUser.password, 10);
+    newUser.role = Types.ObjectId(createUserDto.role);
+    newUser.populate('role', 'name').execPopulate();
     const user = await newUser.save();
     // eslint-disable-next-line @typescript-eslint/no-unused-vars
-    const { password, ...restUserData } = user.toJSON();
+    // const { password, ...restUserData } = user.toJSON();
     return {
       message: 'This action adds a new user',
-      user: restUserData,
+      // user: restUserData,
+      user,
     };
   }
 
   async findAll() {
-    const users = await this.userModel.find().exec();
+    const users = await this.userModel.find().populate('role', 'name').exec();
     return {
       message: 'Lista de usuarios',
       users,
@@ -67,8 +82,19 @@ export class UsersService {
   async update(id: string, updateUserDto: UpdateUserDto) {
     await this.findUserById(id);
 
+    if (updateUserDto.role) {
+      await this.rolesService.findRoleById(updateUserDto.role);
+    }
+
     const updatedUser = await this.userModel
-      .findByIdAndUpdate(id, { $set: updateUserDto }, { new: true })
+      .findByIdAndUpdate(
+        id,
+        {
+          $set: { ...updateUserDto, role: Types.ObjectId(updateUserDto.role) },
+        },
+        { new: true },
+      )
+      .populate('role', 'name')
       .exec();
     return {
       message: `Usuario con el id ${id} actualizado correctamente`,

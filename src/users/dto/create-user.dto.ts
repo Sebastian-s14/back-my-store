@@ -1,11 +1,13 @@
 import { ApiProperty } from '@nestjs/swagger';
 import {
   IsEmail,
+  IsMongoId,
   IsNotEmpty,
   IsOptional,
   IsString,
   Length,
 } from 'class-validator';
+// import { Types } from 'mongoose';
 
 export class CreateUserDto {
   @IsString()
@@ -27,7 +29,8 @@ export class CreateUserDto {
   @ApiProperty({ description: 'user password' })
   readonly password: string;
 
-  @IsOptional()
+  @IsNotEmpty()
+  @IsMongoId()
   @ApiProperty({ description: 'user role, default role -> user' })
   readonly role: string;
 
