@@ -63,12 +63,12 @@ export class RolesService {
   async update(id: string, updateRoleDto: UpdateRoleDto) {
     await this.findRoleById(id);
     await this.findRole(updateRoleDto.name);
-    const updateRole = await this.roleModel
+    const updatedRole = await this.roleModel
       .findByIdAndUpdate(id, { $set: updateRoleDto }, { new: true })
       .exec();
     return {
       message: `This action updates a #${id} role`,
-      role: updateRole,
+      role: updatedRole,
     };
   }
 

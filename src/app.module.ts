@@ -8,6 +8,7 @@ import { AppService } from './app.service';
 import { DatabaseModule } from 'src/database/database.module';
 import { UsersModule } from './users/users.module';
 import { RolesModule } from './roles/roles.module';
+import { CategoriesModule } from './categories/categories.module';
 import config from 'src/config';
 
 @Module({
@@ -25,6 +26,7 @@ import config from 'src/config';
     DatabaseModule,
     UsersModule,
     RolesModule,
+    CategoriesModule,
   ],
   controllers: [AppController],
   providers: [AppService],
