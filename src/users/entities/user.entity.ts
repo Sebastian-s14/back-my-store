@@ -1,10 +1,13 @@
 import { Prop, Schema, SchemaFactory } from '@nestjs/mongoose';
-import { Document, Types } from 'mongoose';
+import { Exclude } from 'class-transformer';
+import { Document, ObjectId, Types } from 'mongoose';
 
 import { Role } from 'src/roles/entities/role.entity';
 
 @Schema({ timestamps: true, versionKey: false })
 export class User extends Document {
+  _id: ObjectId;
+
   @Prop({ required: true })
   name: string;
 
@@ -15,10 +18,8 @@ export class User extends Document {
   email: string;
 
   @Prop({ required: true, select: false })
+  @Exclude()
   password: string;
-
-  // @Prop({ default: 'user' })
-  // role: string;
 
   @Prop({ type: Types.ObjectId, ref: Role.name })
   role: Role | Types.ObjectId;
@@ -28,9 +29,3 @@ export class User extends Document {
 }
 
 export const UserSchema = SchemaFactory.createForClass(User);
-
-UserSchema.method('toJSON', function () {
-  // eslint-disable-next-line @typescript-eslint/no-unused-vars
-  const { password, ...object } = this.toObject();
-  return object;
-});

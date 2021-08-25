@@ -50,14 +50,11 @@ export class UsersService {
     const newUser = new this.userModel(createUserDto);
 
     newUser.password = await bcrypt.hash(newUser.password, 10);
-    newUser.role = Types.ObjectId(createUserDto.role);
+    // newUser.role = Types.ObjectId(createUserDto.role);
     newUser.populate('role', 'name').execPopulate();
     const user = await newUser.save();
-    // eslint-disable-next-line @typescript-eslint/no-unused-vars
-    // const { password, ...restUserData } = user.toJSON();
     return {
       message: 'This action adds a new user',
-      // user: restUserData,
       user,
     };
   }
@@ -93,9 +90,8 @@ export class UsersService {
   async update(id: string, updateUserDto: UpdateUserDto) {
     await this.findUserById(id);
 
-    if (updateUserDto.role) {
+    if (updateUserDto.role)
       await this.rolesService.findRoleById(updateUserDto.role);
-    }
 
     const updatedUser = await this.userModel
       .findByIdAndUpdate(
