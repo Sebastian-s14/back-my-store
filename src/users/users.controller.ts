@@ -31,6 +31,12 @@ export class UsersController {
     return this.usersService.findAll();
   }
 
+  @Get('role/:id')
+  @ApiOperation({ summary: 'Get user by role' })
+  findByRole(@Param('id', MongoIdPipe) id: string) {
+    return this.usersService.findUsersByRole(id);
+  }
+
   @Get(':id')
   @ApiOperation({ summary: 'Get user by id' })
   findOne(@Param('id', MongoIdPipe) id: string) {

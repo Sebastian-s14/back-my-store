@@ -79,6 +79,17 @@ export class UsersService {
     };
   }
 
+  async findUsersByRole(id: string) {
+    await this.rolesService.findRoleById(id);
+    const users = await this.userModel
+      .find({ role: Types.ObjectId(id) })
+      .populate('role', 'name');
+    return {
+      message: `Users with role ${id}`,
+      users,
+    };
+  }
+
   async update(id: string, updateUserDto: UpdateUserDto) {
     await this.findUserById(id);
 
