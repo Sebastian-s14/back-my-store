@@ -42,8 +42,8 @@ export class CategoriesService {
 
   async create(createCategoryDto: CreateCategoryDto) {
     await this.findCategory(createCategoryDto.name);
-    const newRole = new this.categoryModel(createCategoryDto);
-    const category = await newRole.save();
+    const newCategory = new this.categoryModel(createCategoryDto);
+    const category = await newCategory.save();
     return {
       message: 'This action adds a new category',
       category,

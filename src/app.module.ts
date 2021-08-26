@@ -9,6 +9,7 @@ import { DatabaseModule } from 'src/database/database.module';
 import { UsersModule } from './users/users.module';
 import { RolesModule } from './roles/roles.module';
 import { CategoriesModule } from './categories/categories.module';
+import { BrandsModule } from './brands/brands.module';
 import config from 'src/config';
 
 @Module({
@@ -27,6 +28,7 @@ import config from 'src/config';
     UsersModule,
     RolesModule,
     CategoriesModule,
+    BrandsModule,
   ],
   controllers: [AppController],
   providers: [AppService],
