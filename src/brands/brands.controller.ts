@@ -6,7 +6,10 @@ import {
   Patch,
   Param,
   Delete,
+  UseInterceptors,
+  UploadedFile,
 } from '@nestjs/common';
+import { FileInterceptor } from '@nestjs/platform-express';
 import { ApiOperation, ApiTags } from '@nestjs/swagger';
 
 import { MongoIdPipe } from 'src/common/mongo-id.pipe';
@@ -22,9 +25,14 @@ export class BrandsController {
   constructor(private readonly brandsService: BrandsService) {}
 
   @Post()
+  @UseInterceptors(FileInterceptor('file'))
   @ApiOperation({ summary: 'Create brand' })
-  create(@Body() createBrandDto: CreateBrandDto) {
-    return this.brandsService.create(createBrandDto);
+  create(
+    @Body() createBrandDto: CreateBrandDto,
+    @UploadedFile() file: Express.Multer.File,
+  ) {
+    // console.log(file);
+    return this.brandsService.create(createBrandDto, file);
   }
 
   @Get()
@@ -40,12 +48,14 @@ export class BrandsController {
   }
 
   @Patch(':id')
+  @UseInterceptors(FileInterceptor('file'))
   @ApiOperation({ summary: 'Update brand by id' })
   update(
     @Param('id', MongoIdPipe) id: string,
     @Body() updateBrandDto: UpdateBrandDto,
+    @UploadedFile() file: Express.Multer.File,
   ) {
-    return this.brandsService.update(id, updateBrandDto);
+    return this.brandsService.update(id, updateBrandDto, file);
   }
 
   @Delete(':id')

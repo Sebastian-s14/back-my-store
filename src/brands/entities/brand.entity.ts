@@ -8,7 +8,7 @@ export class Brand extends Document {
   @Prop({ required: true })
   name: string;
 
-  @Prop()
+  @Prop({ required: true })
   image: string;
 }
 

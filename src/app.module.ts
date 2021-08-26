@@ -10,6 +10,7 @@ import { UsersModule } from './users/users.module';
 import { RolesModule } from './roles/roles.module';
 import { CategoriesModule } from './categories/categories.module';
 import { BrandsModule } from './brands/brands.module';
+import { CloudinaryModule } from './cloudinary/cloudinary.module';
 import config from 'src/config';
 
 @Module({
@@ -29,6 +30,7 @@ import config from 'src/config';
     RolesModule,
     CategoriesModule,
     BrandsModule,
+    CloudinaryModule,
   ],
   controllers: [AppController],
   providers: [AppService],
