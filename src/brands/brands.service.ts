@@ -30,12 +30,12 @@ export class BrandsService {
     return brand;
   }
 
-  async findBrand(brandName: string) {
-    const existCategory = await this.brandModel
+  async findBrand(brandName: string, id?: string) {
+    const existBrand = await this.brandModel
       .findOne({ name: brandName })
       .exec();
-
-    if (existCategory) {
+    console.log(existBrand);
+    if (existBrand && existBrand._id !== id) {
       throw new BadRequestException(
         `Ya existe una marca con el nombre: ${brandName}`,
       );
@@ -45,15 +45,17 @@ export class BrandsService {
   async create(createBrandDto: CreateBrandDto, file: Express.Multer.File) {
     await this.findBrand(createBrandDto.name);
     const newBrand = new this.brandModel(createBrandDto);
-    if (file) {
-      const { secure_url } = await this._cloudinaryService
-        .uploadImage(file)
-        .catch((e) => {
-          console.log(e);
-          throw new BadRequestException('Invalid file type.');
-        });
-      newBrand.image = secure_url;
-    }
+
+    if (!file) throw new BadRequestException('file is required.');
+
+    const { secure_url } = await this._cloudinaryService
+      .uploadImage(file)
+      .catch((e) => {
+        console.log(e);
+        throw new BadRequestException('Invalid file type.');
+      });
+    newBrand.image = secure_url;
+
     const brand = await newBrand.save();
     return {
       message: 'This action adds a new brand',
@@ -82,9 +84,8 @@ export class BrandsService {
     updateBrandDto: UpdateBrandDto,
     file: Express.Multer.File,
   ) {
-    // console.log(file);
     const brand = await this.findBrandById(id);
-    await this.findBrand(updateBrandDto.name);
+    await this.findBrand(UpdateBrandDto.name, id);
     updateBrandDto.image = brand.image;
     if (file) {
       const { secure_url } = await this._cloudinaryService.updateImage(
@@ -100,7 +101,6 @@ export class BrandsService {
     return {
       message: `This action updates a #${id} brand`,
       brand: updatedBrand,
-      // updateBrandDto,
     };
   }
 

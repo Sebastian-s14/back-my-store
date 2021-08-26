@@ -41,7 +41,7 @@ export class CloudinaryService {
     //   await this.uploadImage(file);
     //   resolve();
     // });
-    await this.deleteImage(image);
+    if (image) await this.deleteImage(image);
     return this.uploadImage(file);
   }
 }
