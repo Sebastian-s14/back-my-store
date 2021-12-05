@@ -51,7 +51,8 @@ export class UsersService {
 
     newUser.password = await bcrypt.hash(newUser.password, 10);
     // newUser.role = Types.ObjectId(createUserDto.role);
-    newUser.populate('role', 'name').execPopulate();
+    // newUser.populate('role', 'name').execPopulate();
+    await newUser.populate('role', 'name');
     const user = await newUser.save();
     return {
       message: 'This action adds a new user',
@@ -79,7 +80,8 @@ export class UsersService {
   async findUsersByRole(id: string) {
     await this.rolesService.findRoleById(id);
     const users = await this.userModel
-      .find({ role: Types.ObjectId(id) })
+      // .find({ role: Types.ObjectId(id) })
+      .find({ role: new Types.ObjectId(id) })
       .populate('role', 'name');
     return {
       message: `Users with role ${id}`,
@@ -97,7 +99,11 @@ export class UsersService {
       .findByIdAndUpdate(
         id,
         {
-          $set: { ...updateUserDto, role: Types.ObjectId(updateUserDto.role) },
+          $set: {
+            ...updateUserDto,
+            role: new Types.ObjectId(updateUserDto.role),
+          },
+          // $set: { ...updateUserDto, role: updateUserDto.role },
         },
         { new: true },
       )
