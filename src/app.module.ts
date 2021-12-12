@@ -11,8 +11,11 @@ import { RolesModule } from './roles/roles.module';
 import { CategoriesModule } from './categories/categories.module';
 import { BrandsModule } from './brands/brands.module';
 import { CloudinaryModule } from './cloudinary/cloudinary.module';
+import { ProductsModule } from './products/products.module';
 import config from 'src/config';
 
+// console.log('envs', enviroments);
+// console.log('app', process.env.NODE_ENV);
 @Module({
   imports: [
     ConfigModule.forRoot({
@@ -31,6 +34,7 @@ import config from 'src/config';
     CategoriesModule,
     BrandsModule,
     CloudinaryModule,
+    ProductsModule,
   ],
   controllers: [AppController],
   providers: [AppService],

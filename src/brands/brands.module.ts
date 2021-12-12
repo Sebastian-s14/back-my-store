@@ -6,6 +6,7 @@ import { CloudinaryModule } from 'src/cloudinary/cloudinary.module';
 
 import { BrandsService } from './brands.service';
 import { BrandsController } from './brands.controller';
+import { CategoriesModule } from 'src/categories/categories.module';
 
 @Module({
   controllers: [BrandsController],
@@ -18,6 +19,7 @@ import { BrandsController } from './brands.controller';
       },
     ]),
     CloudinaryModule,
+    CategoriesModule,
   ],
 })
 export class BrandsModule {}

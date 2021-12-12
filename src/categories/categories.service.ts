@@ -18,14 +18,14 @@ export class CategoriesService {
   ) {}
 
   async findCategoryById(id: string) {
-    const role = await this.categoryModel.findById(id).exec();
+    const category = await this.categoryModel.findById(id).exec();
 
-    if (!role)
+    if (!category)
       throw new NotFoundException(
         `No se encontró la categoría con el id: ${id}`,
       );
 
-    return role;
+    return category;
   }
 
   async findCategory(categoryName: string) {

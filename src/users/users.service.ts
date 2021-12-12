@@ -92,8 +92,26 @@ export class UsersService {
   async update(id: string, updateUserDto: UpdateUserDto) {
     await this.findUserById(id);
 
-    if (updateUserDto.role)
+    if (updateUserDto.role) {
       await this.rolesService.findRoleById(updateUserDto.role);
+      const updatedUser = await this.userModel
+        .findByIdAndUpdate(
+          id,
+          {
+            $set: {
+              ...updateUserDto,
+              role: new Types.ObjectId(updateUserDto.role),
+            },
+            // $set: { ...updateUserDto, role: updateUserDto.role },
+          },
+          { new: true },
+        )
+        .populate('role', 'name');
+      return {
+        message: `Usuario con el id ${id} actualizado correctamente`,
+        user: updatedUser,
+      };
+    }
 
     const updatedUser = await this.userModel
       .findByIdAndUpdate(
@@ -101,14 +119,11 @@ export class UsersService {
         {
           $set: {
             ...updateUserDto,
-            role: new Types.ObjectId(updateUserDto.role),
           },
-          // $set: { ...updateUserDto, role: updateUserDto.role },
         },
         { new: true },
       )
-      .populate('role', 'name')
-      .exec();
+      .populate('role', 'name');
     return {
       message: `Usuario con el id ${id} actualizado correctamente`,
       user: updatedUser,

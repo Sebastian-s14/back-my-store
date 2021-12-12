@@ -1,11 +1,16 @@
 import { ApiProperty } from '@nestjs/swagger';
-import { IsNotEmpty, IsString } from 'class-validator';
+import { IsMongoId, IsNotEmpty, IsString } from 'class-validator';
 
 export class CreateBrandDto {
   @IsNotEmpty()
   @IsString()
   @ApiProperty({ description: 'brand name' })
   readonly name: string;
+
+  @IsNotEmpty()
+  @IsMongoId()
+  @ApiProperty({ description: 'brand category' })
+  readonly category: string;
 
   // @IsNotEmpty()
   // @ApiProperty({ description: 'brand image' })

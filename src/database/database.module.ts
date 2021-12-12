@@ -1,6 +1,7 @@
 import { Module, Global } from '@nestjs/common';
 import { ConfigType } from '@nestjs/config';
 import { MongooseModule } from '@nestjs/mongoose';
+// import { enviroments } from 'src/enviroments';
 // import { MongoClient } from 'mongodb';
 
 import config from '../config';
@@ -22,6 +23,12 @@ import config from '../config';
     MongooseModule.forRootAsync({
       useFactory: (configService: ConfigType<typeof config>) => {
         const { connection, user, password, dbName } = configService.mongo;
+        // console.log('======================');
+        // console.log('NODE_ENV', process.env.NODE_ENV);
+        // console.log('connection', connection);
+        // console.log('user', user);
+        // console.log('password', password);
+        // console.log('dbName', dbName);
         return {
           //   uri: `${connection}://${host}:${port}`,
           uri: connection,
